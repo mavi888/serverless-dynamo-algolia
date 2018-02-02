@@ -43,6 +43,13 @@ functions:
             Fn::GetAtt:
               - PersonsTable
               - StreamArn
+  searchAlgoliaIndex:
+    handler: handler.searchAlgoliaIndex
+    events:
+      - http:
+          path: person/search
+          method: get
+
 resources:
   Resources:
     PersonsTable:

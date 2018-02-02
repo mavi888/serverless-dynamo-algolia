@@ -12,6 +12,10 @@ module.exports.addPerson = streamPerson => {
   return index.addObject(person);
 };
 
+module.exports.searchPerson = query => {
+  return index.search(query);
+};
+
 function preparePersonForAlgolia(streamPerson) {
   console.log(streamPerson);
   return {

@@ -34,3 +34,13 @@ module.exports.updateAlgoliaIndex = (event, context, callback) => {
     callback(null, null);
   });
 };
+
+module.exports.searchAlgoliaIndex = (event, context, callback) => {
+  console.log('searchAlgoliaIndex was callled');
+  const searchParameters = event.queryStringParameters;
+  console.log(searchParameters);
+
+  algoliaManager.searchPerson(searchParameters).then(result => {
+    callback(null, createResponse(200, result));
+  });
+};
