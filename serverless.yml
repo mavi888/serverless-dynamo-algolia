@@ -3,6 +3,9 @@ service: serverless-dynamo-algolia
 custom:
   settings:
     PERSONS_DYNAMODB_TABLE: sls-algolia-persons
+    ALGOLIA_APP_ID: ${ssm:serverless-algolia-app-id}
+    ALGOLIA_ADMIN_API_KEY: ${ssm:serverless-algolia-admin-api-key}
+    ALGOLIA_INDEX_NAME: serverless-persons-index
 
 provider:
   name: aws
@@ -29,7 +32,17 @@ functions:
       - http:
           path: person
           method: post
-
+  updateAlgoliaIndex:
+    handler: handler.updateAlgoliaIndex
+    events:
+       - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - PersonsTable
+              - StreamArn
 resources:
   Resources:
     PersonsTable:

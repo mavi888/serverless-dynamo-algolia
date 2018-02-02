@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "algoliasearch": "^3.24.9",
+    "uuid": "^3.2.1"
+  }
 }
