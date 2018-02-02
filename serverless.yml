@@ -1,0 +1,49 @@
+service: serverless-dynamo-algolia
+
+custom:
+  settings:
+    PERSONS_DYNAMODB_TABLE: sls-algolia-persons
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: default
+  region: eu-west-1
+  environment: ${self:custom.settings}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:ListStreams"
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.PERSONS_DYNAMODB_TABLE}"
+
+functions:
+  savePerson:
+    handler: handler.savePerson
+    events:
+      - http:
+          path: person
+          method: post
+
+resources:
+  Resources:
+    PersonsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: "personId"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "personId"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.PERSONS_DYNAMODB_TABLE}
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
